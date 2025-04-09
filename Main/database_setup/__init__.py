@@ -3,6 +3,7 @@ from .model import Students
 from fastapi import Depends
 from typing import Annotated
 from sqlalchemy.orm import Session
+from .schemas import RegisterStudent
 
 Base.metadata.create_all(bind=engine)
 
