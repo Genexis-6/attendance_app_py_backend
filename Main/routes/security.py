@@ -1,10 +1,8 @@
 from fastapi import APIRouter, Form, File, UploadFile
 from starlette.responses import JSONResponse
-
-from Main.utils import get_unique_file_name, save_profile, generate_hash_password
-from pathlib import Path
+from Main.utils import get_unique_file_name, save_profile, generate_hash_password, verify_hash_password, authenticate_student
 from starlette.exceptions import HTTPException
-from Main.database_setup import DbManager, Students, RegisterStudent
+from Main.database_setup import DbManager, Students, RegisterStudent, LoginStudent
 import json
 
 
@@ -32,7 +30,7 @@ async def register_students(
     ):
     try:
         student = RegisterStudent(**json.loads(student_details))
-        check_user_exist = db.query(Students).filter(Students.email== student.email).first()
+        check_user_exist = db.query(Students).filter(Students.matric== student.matric).first()
         if check_user_exist:
             raise HTTPException(
                 detail="this user already exist",
@@ -67,7 +65,17 @@ async def register_students(
     except json.JSONDecodeError as e:
         raise HTTPException(
             detail=f"invalid json data due to {e}",
-            status_code=400
+            status_code=500
         )
 
 
+@security.post("/login")
+async def login_user(db: DbManager, student_details: str = Form(...)):
+    try:
+        student_login = LoginStudent(**json.loads(student_details))
+        authenticate_student(db, matric=student_login.matric, password=student_login.password)
+    except json.JSONDecodeError as e:
+        raise HTTPException(
+            detail=f"invalid json data due to {e}",
+            status_code=500
+        )
