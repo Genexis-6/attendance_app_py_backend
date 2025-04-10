@@ -1,6 +1,6 @@
 .venv
 .idea
-.env
+
 alembic.ini
 data.db
 
