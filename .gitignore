@@ -2,6 +2,7 @@
 .idea
 .env
 alembic.ini
+data.db
 
 alembic
 
@@ -9,4 +10,3 @@ Main/__pycache__
 Main/database_setup/__pycache__
 Main/routes/__pycache__
 
-data.db
